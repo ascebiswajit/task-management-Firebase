@@ -1,8 +1,7 @@
-// screens/ProductsScreen.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Button, StyleSheet, Modal, TextInput } from 'react-native';
+import { View, Text, FlatList, Button, StyleSheet, Modal, TextInput, Alert } from 'react-native';
 import { collection, getDocs, deleteDoc, updateDoc, doc } from 'firebase/firestore'; // Import Firestore functions
-import { db } from '../firebase'; // Import Firestore instance
+import { db, auth } from '../firebase'; // Import Firestore and Authentication instances
 
 export default function ProductsScreen({ navigation }) {
   const [products, setProducts] = useState([]);
@@ -12,6 +11,19 @@ export default function ProductsScreen({ navigation }) {
   const [editDescription, setEditDescription] = useState('');
   const [editPrice, setEditPrice] = useState('');
   const [editCategory, setEditCategory] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        setCurrentUser(user);
+      } else {
+        setCurrentUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -73,10 +85,12 @@ export default function ProductsScreen({ navigation }) {
       <Text style={styles.productDescription}>{item.description}</Text>
       <Text style={styles.productPrice}>Price: ${item.price}</Text>
       <Text style={styles.productCategory}>Category: {item.category}</Text>
-      <View style={styles.buttonContainer}>
-        <Button title="Edit" onPress={() => openEditModal(item)} />
-        <Button title="Delete" onPress={() => handleDeleteProduct(item.id)} />
-      </View>
+      {currentUser && currentUser.uid === item.userId && (
+        <View style={styles.buttonContainer}>
+          <Button title="Edit" onPress={() => openEditModal(item)} />
+          <Button title="Delete" onPress={() => handleDeleteProduct(item.id)} />
+        </View>
+      )}
     </View>
   );
 
