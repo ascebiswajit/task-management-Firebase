@@ -1,17 +1,33 @@
 // screens/HomeScreen.js
 import React from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, StyleSheet, Image } from 'react-native';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
 
-function HomeScreen({ navigation }) {
+export default function HomeScreen({ route, navigation }) {
+  const { user } = route.params;
+
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        navigation.replace('Login');
+      })
+      .catch(error => alert(error.message));
+  };
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to Details"
-        onPress={() => navigation.navigate('Details')}
-      />
+    <View style={styles.container}>
+      {user.displayName && <Text>Welcome, {user.displayName}</Text>}
+      {user.photoURL && <Image source={{ uri: user.photoURL }} style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 10 }} />}
+      <Button title="Logout" onPress={handleLogout} />
     </View>
   );
 }
 
-export default HomeScreen;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
