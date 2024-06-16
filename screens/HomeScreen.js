@@ -1,25 +1,31 @@
 // screens/HomeScreen.js
 import React from 'react';
-import { View, Text, Button, StyleSheet, Image } from 'react-native';
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebase';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import { signOut } from 'firebase/auth'; // Import Firebase auth
+import { auth } from '../firebase'; // Import Firebase auth
 
-export default function HomeScreen({ route, navigation }) {
-  const { user } = route.params;
+export default function HomeScreen({ navigation }) {
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log('User logged out');
+      navigation.navigate('Login'); // Navigate to login screen after logout
+    } catch (error) {
+      console.error('Error logging out: ', error);
+    }
+  };
 
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        navigation.replace('Login');
-      })
-      .catch(error => alert(error.message));
+  const handleAddProduct = () => {
+    navigation.navigate('AddProduct');
   };
 
   return (
     <View style={styles.container}>
-      {user.displayName && <Text>Welcome, {user.displayName}</Text>}
-      {user.photoURL && <Image source={{ uri: user.photoURL }} style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 10 }} />}
+      <Text>Home Screen</Text>
       <Button title="Logout" onPress={handleLogout} />
+      <Button title="Add Product" onPress={handleAddProduct} />
+      <Button title="Products" onPress={() => navigation.navigate('Products')} />
+
     </View>
   );
 }
