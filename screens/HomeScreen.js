@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { collection, getDoc, doc } from 'firebase/firestore';
@@ -38,6 +38,10 @@ export default function HomeScreen({ navigation }) {
     navigation.navigate('AddProduct');
   };
 
+  const handleGoToProducts = () => {
+    navigation.navigate('Products');
+  };
+
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
@@ -58,6 +62,12 @@ export default function HomeScreen({ navigation }) {
       </View>
       <Text style={styles.title}>Home Screen</Text>
       <View style={styles.floatingButtonContainer}>
+        <TouchableOpacity
+          style={styles.docsButton}
+          onPress={handleGoToProducts}
+        >
+          <Icon name="document-text" size={30} color="#fff" />
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.floatingButton}
           onPress={handleAddProduct}
@@ -97,6 +107,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 30,
     right: 30,
+    alignItems: 'center',
+  },
+  docsButton: {
+    backgroundColor: '#6200ee',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    marginBottom: 10, // Add margin between the buttons
   },
   floatingButton: {
     backgroundColor: '#6200ee',

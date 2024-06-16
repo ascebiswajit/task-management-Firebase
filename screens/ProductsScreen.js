@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Button, StyleSheet, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, FlatList, Button, StyleSheet, Modal, TextInput, Alert, Image } from 'react-native';
 import { collection, getDocs, deleteDoc, updateDoc, doc } from 'firebase/firestore'; // Import Firestore functions
 import { db, auth } from '../firebase'; // Import Firestore and Authentication instances
 
@@ -81,6 +81,10 @@ export default function ProductsScreen({ navigation }) {
 
   const renderItem = ({ item }) => (
     <View style={styles.productItem}>
+      <Image 
+        source={{ uri: 'https://via.placeholder.com/150' }} // Dummy image URL
+        style={styles.productImage}
+      />
       <Text style={styles.productTitle}>{item.title}</Text>
       <Text style={styles.productDescription}>{item.description}</Text>
       <Text style={styles.productPrice}>Price: ${item.price}</Text>
@@ -160,6 +164,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 20,
     marginBottom: 10,
+    alignItems: 'center', // Center the content
+  },
+  productImage: {
+    width: 150, // Set width of the image
+    height: 150, // Set height of the image
+    marginBottom: 10,
   },
   productTitle: {
     fontSize: 18,
@@ -168,6 +178,7 @@ const styles = StyleSheet.create({
   productDescription: {
     fontSize: 16,
     marginBottom: 10,
+    textAlign: 'center', // Center the text
   },
   productPrice: {
     fontSize: 16,
@@ -183,6 +194,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 10,
+    width: '100%',
   },
   centeredView: {
     flex: 1,
